@@ -1,0 +1,76 @@
+
+R version 4.5.2 (2025-10-31) -- "[Not] Part in a Rumble"
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(terracliva)
+Loading required package: lmomPi
+Loading required package: lmom
+Loading required package: stringr
+Loading required package: terra
+terra 1.9.41
+Loading required package: magrittr
+
+Attaching package: ‘magrittr’
+
+The following objects are masked from ‘package:terra’:
+
+    extract, inset
+
+
+Attaching package: ‘terracliva’
+
+The following object is masked from ‘package:terra’:
+
+    regress
+
+> library(terra)
+> library(parallel)
+> ###
+> ###
+> ###
+> ###
+> wpath <- "/home/ecor/local/tasks/jrc/2026b/heatwaves/"
+> wpath_data <- file.path(wpath, "data")
+> wpath_outcome <- file.path(wpath, "outcomes")
+> cores <- parallel::detectCores() - 4
+> 
+> 
+> tmax_dataset_daily <- wpath_data |> list.files(full.names=TRUE,pattern="tmax.nc") |> rast() ##lapply(rast)
+> terra::time(tmax_dataset_daily) <- terra::time(tmax_dataset_daily) |> as.Date()
+> 
+> var <- "tmax"
+> 
+> filename <- file.path(wpath_outcome, "hwmid_%s_variable.tif") |> sprintf(var)
+> 
+> if (file.exists(filename)) {
++   o_hw_regress <- rast(filename)
++ } else {
++   o_hw_regress <- hwmidapprast(tmax_dataset_daily,summary_regress=TRUE,cores = cores,
++                                         filename = filename, overwrite = TRUE)
++ }
+[1] "hwmidapprast"
+[1] "month"
+[1] "M07"
+> 
+> 
+> 
+> 
+> 
+> proc.time()
+   user  system elapsed 
+ 32.708   7.336 342.764 
